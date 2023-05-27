@@ -83,6 +83,7 @@ CREATE VIEW ilumi_count AS SELECT COUNT(users.id_user) users FROM users,ilumi_sh
 /*Realstate*/
 
 DROP TABLE IF EXISTS users_addresses;
+DROP TABLE IF EXISTS addresses;
 DROP TABLE IF EXISTS streets;
 DROP TABLE IF EXISTS cities;
 DROP TABLE IF EXISTS countries;
@@ -91,7 +92,6 @@ DROP TABLE IF EXISTS staircases;
 DROP TABLE IF EXISTS floors;
 DROP TABLE IF EXISTS doors;
 DROP TABLE IF EXISTS zipcodes;
-DROP TABLE IF EXISTS addresses;
 DROP TABLE IF EXISTS planets;
 
 CREATE TABLE planets (id_planet INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT, planet VARCHAR(64) NOT NULL);
@@ -113,7 +113,7 @@ CREATE TABLE doors (id_door INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT, do
 CREATE TABLE zipcodes (id_zipcode INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT, zipcode VARCHAR(16) NOT NULL);
 
 CREATE TABLE addresses (id_address BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT, 
-id_street INT UNSIGNED NOT NULL, 
+id_street BIGINT UNSIGNED NOT NULL, 
 id_street_num INT UNSIGNED NOT NULL, 
 id_staircase INT UNSIGNED NOT NULL, 
 id_floor INT UNSIGNED NOT NULL, 
@@ -124,10 +124,10 @@ FOREIGN KEY(id_street_num) REFERENCES streets_num(id_street_num),
 FOREIGN KEY(id_staircase) REFERENCES staircases(id_staircase), 
 FOREIGN KEY(id_floor) REFERENCES floors(id_floor), 
 FOREIGN KEY(id_door) REFERENCES doors(id_door),
-FOREIGN KEY(id_zipcode) REFERENCES zipcodes(id_zipcode));
+FOREIGN KEY(id_zipcode) REFERENCES zipcodes(id_zipcode)) ENGINE=InnoDB;
 
 
-CREATE TABLE users_addresses (id_user_address BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT, id_user BIGINT UNSIGNED NOT NULL, id_address BIGINT UNSIGNED NOT NULL, FOREIGN KEY(id_user) REFERENCES users(id_user), FOREIGN KEY (id_address) REFERENCES addresses(id_address));
+CREATE TABLE users_addresses (id_user_address BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT, id_user BIGINT UNSIGNED NOT NULL, id_address BIGINT UNSIGNED NOT NULL, FOREIGN KEY(id_user) REFERENCES users(id_user), FOREIGN KEY (id_address) REFERENCES addresses(id_address)) ENGINE=InnoDB;
 
 INSERT INTO planets(planet) VALUES ("Mercurio"),("Venus"), ("Tierra"), ("Marte");
 
@@ -149,8 +149,8 @@ INSERT INTO zipcodes (zipcode) VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(
 
 INSERT INTO addresses (id_street, id_street_num, id_staircase, id_floor, id_door, id_zipcode) VALUES (1,1,1,1,1,1), (2,2,2,2,2,2), (3,3,3,3,3,3), (4,4,4,4,4,4), (5,5,5,5,5,5), (6,6,6,6,6,6), (7,7,7,7,7,7), (8,8,8,8,8,8), (9,9,9,9,9,9), (10,10,10,10,10,10), (11,11,11,11,11,11), (12,12,12,12,12,12), (13,13,13,13,13,13), (14,14,14,14,14,14),(15,15,15,15,15,15);
 
-INSERT INTO users (`user`) VALUES (1),(2),(3),(4),(5),(6),(7),(8);
+INSERT INTO users (name) VALUES (1),(2),(3),(4),(5),(6),(7),(8);
 
 INSERT INTO users_addresses(id_user, id_address) VALUES (1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(1,9),(2,10),(3,11),(4,12),(5,13),(6, 14),(7,15);
 
-CREATE VIEW AS planet_addresses SELECT planets.planet, COUNT(addresses.id_address) planet_addresses FROM planets;
+CREATE VIEW planet_adresses AS SELECT planets.planet, COUNT(addresses.id_address) planet_addresses FROM planets, addresses;
