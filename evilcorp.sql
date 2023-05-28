@@ -85,9 +85,9 @@ INSERT INTO conspirations (conspiration, description) VALUES ("No Holo", "Los mu
 
 INSERT INTO iluminatis (id_user) VALUES (1), (3);
 
-CREATE VIEW ilumi_show AS SELECT users.id_user, users.name FROM users LEFT JOIN iluminatis ON users.id_user = iluminatis.id_user;
+CREATE VIEW ilumi_show AS SELECT users.id_user, users.name FROM users, iluminatis WHERE users.id_user=iluminatis.id_user;
 
-CREATE VIEW ilumi_count AS SELECT COUNT(users.id_user) users FROM users,ilumi_show;
+CREATE VIEW ilumi_count AS SELECT COUNT(ilumi_show.id_user) users FROM ilumi_show;
 
 /*Realstate*/
 
