@@ -117,10 +117,10 @@ DECLARE country_id INT UNSIGNED;
 DECLARE city_id INT UNSIGNED;
 
 
-SELECT id_planet INTO planet_id FROM planets WHERE name = planet_name;
+SELECT id_planet INTO planet_id FROM planets WHERE planet = planet_name;
 
 IF planet_id IS NULL THEN
-INSERT INTO planets (name) VALUES (planet_name);
+INSERT INTO planets (planet) VALUES (planet_name);
 SET planet_id = LAST_INSERT_ID();
 END IF;
 
@@ -232,11 +232,13 @@ BEGIN
 DECLARE users INT;
 DECLARE random_num INT;
 DECLARE random_user INT;
+DECLARE random_name VARCHAR(32);
 
 SELECT COUNT(*) INTO users FROM users_planets WHERE users_planets.id_planet = planet_id;
 SET random_num = FLOOR(RAND() * users);
 SELECT id_user INTO random_user FROM users_planets WHERE users_planets.id_planet = planet_id LIMIT random_num, 1;
-RETURN random_user;
+SELECT users.name INTO random_name FROM users WHERE users.id_user = random_user;
+RETURN random_name;
 END $$
 
 DELIMITER ;
