@@ -98,8 +98,6 @@ DROP VIEW IF EXISTS count_users_planet;
 DROP VIEW IF EXISTS planet_medicine_production;
 DROP FUNCTION IF EXISTS get_city;
 DROP FUNCTION IF EXISTS random_user;
-DROP PROCEDURE IF EXISTS killer;
-
 DELIMITER $$
 CREATE FUNCTION get_city(city_name VARCHAR(64), country_name VARCHAR(64), planet_name VARCHAR(64))
 RETURNS INT UNSIGNED
@@ -224,44 +222,11 @@ BEGIN
 DECLARE users VARCHAR(32);
 
 SELECT name INTO users
-FROM users
-WHERE id_user IN (SELECT id_user
-FROM users_addresses
-INNER JOIN addresses ON users_addresses.id_address = addresses.id_address
-INNER JOIN streets ON streets.id_street = addresses.id_street
-INNER JOIN cities ON streets.id_city = cities.id_city
-INNER JOIN countries ON cities.id_country = countries.id_country
-INNER JOIN planets ON countries.id_planet = planets.id_planet
-WHERE planets.planet = planet_name)ORDER BY RAND() LIMIT 1;
+FROM users, planets
+WHERE planets.planet = planet_name 
+ORDER BY RAND(2) LIMIT 1;
+
 RETURN users;
-END $$
-
-DELIMITER ;
-
-
-DELIMITER $$
-
-CREATE PROCEDURE killer(IN name_user VARCHAR(64))
-BEGIN
-DECLARE user_dead VARCHAR(64);
-DECLARE user_alive BOOLEAN;
-
--- Verificar si el usuario está muerto
-SELECT dead INTO user_alive
-FROM users
-WHERE name = name_user;
-IF user_alive THEN
-
--- Usuario muerto, mostrar mensaje
-SELECT CONCAT('El usuario ', name_user, ' ya está muerto.') AS mensaje;
-ELSE
-
--- Usuario vivo, matarlo
-UPDATE users
-SET dead = TRUE
-WHERE name = name_user;
-SELECT CONCAT('Hemos matado al usuario ', name_user, '.') AS mensaje;
-END IF;
 END $$
 
 DELIMITER ;
