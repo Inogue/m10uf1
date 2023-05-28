@@ -203,7 +203,7 @@ INSERT INTO users_planets(id_user, id_planet) VALUES (1,1),(2,2),(3,3);
 
 CREATE VIEW planet_addresses AS SELECT planets.planet, COUNT(addresses.id_address) planet_addresses FROM planets, addresses;
 
-CREATE VIEW count_users_planet AS SELECT planets.planet, COUNT(users_planets.id_user) count_user FROM users, planets, users_planets WHERE users.id_user=users_planets.id_user_planet AND planets.id_planet = users_planets.id_user GROUP BY planets.planet;
+CREATE VIEW count_users_planet AS SELECT planets.planet, COUNT(users_planets.id_user) count_user FROM users, planets, users_planets WHERE users.id_user=users_planets.id_user AND planets.id_planet = users_planets.id_planet GROUP BY planets.planet;
 
 CREATE VIEW planet_medicine_production AS SELECT planets.planet, SUM(cost_sell) generated FROM users, medicines, diagnoses, planets, users_planets, treatments WHERE planets.id_planet=users_planets.id_planet AND diagnoses.id_user=users_planets.id_user AND diagnoses.id_diagnosis=treatments.id_diagnosis AND medicines.id_medicine=treatments.id_medicine GROUP BY planets.planet;
 
