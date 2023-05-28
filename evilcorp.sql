@@ -13,7 +13,7 @@ drop table if exists `users`;
 drop table if exists diseases;
 drop table if exists medicines;
 drop table if exists doctors;
-
+DROP VIEW IF EXISTS costes;
 
 create table `users`(id_user BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(64) NOT NULL);
 
@@ -38,6 +38,14 @@ insert into diseases(disease, symptoms, description, deadly) values ("Bronquitis
 insert into diagnoses(diagnosis, id_doctor, id_user, id_disease) values("Esta mu malo", 1, 2, 3), ("Esta mas malo aun", 2, 3, 1), ("Esta malo", 1, 2, 1), ("Esta malo maloso", 1, 1, 7);
 
 insert into treatments(id_diagnosis, id_medicine) values(1,1),(1,2),(2,3),(4,3),(3, 4);
+
+create view costes as select treatments.id_medicine, 
+COUNT(medicine) medicines, cost_production, 
+SUM(cost_production) total_cost_production, cost_sell, 
+SUM(cost_sell) total_cost_sell from medicines LEFT JOIN
+treatments on medicines.id_medicine=treatments.id_medicine group 
+by cost_production;
+
 
 /*Conspiraciones*/
 
