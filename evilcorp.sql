@@ -209,7 +209,7 @@ INSERT INTO users_addresses(id_user, id_address) VALUES (1,1),(2,2),(3,3),(4,4),
 
 INSERT INTO users_planets(id_user, id_planet) VALUES (1,1),(2,2),(3,3);
 
-CREATE VIEW planet_addresses AS SELECT planets.planet, COUNT(addresses.id_address) planet_addresses FROM planets, addresses;
+CREATE VIEW planet_addresses AS SELECT planets.planet, COUNT(*) planet_addresses FROM planets, addresses, users, users_planets, users_addresses WHERE users.id_user=users_planets.id_user AND users_planets.id_planet=planets.id_planet AND users.id_user=users_addresses.id_user AND addresses.id_address=users_addresses.id_address GROUP BY planets.planet;
 
 CREATE VIEW count_users_planet AS SELECT planets.planet, COUNT(users_planets.id_user) count_user FROM users, planets, users_planets WHERE users.id_user=users_planets.id_user AND planets.id_planet = users_planets.id_planet GROUP BY planets.planet;
 
