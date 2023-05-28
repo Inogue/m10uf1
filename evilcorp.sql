@@ -218,22 +218,17 @@ GRANT SELECT, UPDATE ON evilcorp.users TO 'parca'@'localhost';
 
 DELIMITER $$
 
-CREATE FUNCTION random_user(planet_name VARCHAR(64))
+CREATE FUNCTION random_user(planet_id INT)
 RETURNS VARCHAR(32)
 BEGIN
-DECLARE users VARCHAR(32);
+DECLARE users INT;
+DECLARE random_num INT;
+DECLARE random_user INT;
 
-SELECT name INTO users
-FROM users
-WHERE id_user IN (SELECT id_user
-FROM users_addresses
-INNER JOIN addresses ON users_addresses.id_address = addresses.id_address
-INNER JOIN streets ON streets.id_street = addresses.id_street
-INNER JOIN cities ON streets.id_city = cities.id_city
-INNER JOIN countries ON cities.id_country = countries.id_country
-INNER JOIN planets ON countries.id_planet = planets.id_planet
-WHERE planets.planet = planet_name)ORDER BY RAND() LIMIT 1;
-RETURN users;
+SELECT COUNT(*) INTO users FROM users_planets WHERE users_planets.id_planet = planet_id;
+SET random_num = FLOOR(RAND() * users);
+SELECT id_user INTO random_user FROM users_planets WHERE users_planets.id_planet = planet_id LIMIT random_num, 1;
+RETURN random_user;
 END $$
 
 DELIMITER ;
